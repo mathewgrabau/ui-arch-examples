@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>My Vue App</title>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+</head>
+
+<body>
+    <div id="app">
+        <div v-if="!authToken"><button id="login" v-on:click="doLogin">Login</button></div>
+        <div v-else><button id="logout">Logout</button></div>
+    </div>
+
+    <script>
+        window.onload = () => {
+            console.log('window loaded');
+
+            const service = {
+                /**
+                 * @brief Perform the login operation.
+                 * @returns {Promise<string>} The auth token.
+                 */
+                async login() {
+                    // simulate a delay
+                    await new Promise(resolve => setTimeout(resolve, 1000));
+                    return 'my-auth-token';
+                },
+                /**
+                 * @brief Perform the logout operation.
+                 * @returns {Promise<void>}
+                 */
+                async logout() {
+                    // simulate a delay
+                    await new Promise(resolve => setTimeout(resolve, 1000));
+                }
+            }
+            const { createApp } = Vue;
+            const app = createApp({
+                data() {
+                    return {
+                        authToken: null,
+                    }
+                },
+                methods: {
+                    async doLogin() {
+                        this.authToken = await service.login();
+                    },
+                    async doLogout() {
+                        await service.logout();
+                        this.authToken = null;
+                    }
+                }
+            });
+            app.mount('#app');
+        };
+
+
+    </script>
+</body>
+
+</html>

@@ -17,7 +17,7 @@
         window.onload = () => {
             console.log('window loaded');
 
-            const service = {
+            const authService = {
                 /**
                  * @brief Perform the login operation.
                  * @returns {Promise<string>} The auth token.
@@ -45,10 +45,10 @@
                 },
                 methods: {
                     async doLogin() {
-                        this.authToken = await service.login();
+                        this.authToken = await authService.login();
                     },
                     async doLogout() {
-                        await service.logout();
+                        await authService.logout();
                         this.authToken = null;
                     }
                 }

@@ -11,12 +11,19 @@
     <div id="app">
         <div v-if="viewModel.showLoginButton"><button id="login" v-on:click="doLogin">Login</button></div>
         <div v-if="viewModel.showLogoutButton"><button id="logout" v-on:click="doLogout">Logout</button></div>
+        <div v-if="viewModel.showBusy">Processing</div>
+
+        <div>
+            <p>Another view (component) - you must be logged in to access it.</p>
+            <p>Should only show when the Logout button is displayed.</p>
+        </div>
+
     </div>
 
     <script>
         window.onload = () => {
             console.log('window loaded');
-
+          
             // These operations can be easily stubbed/mocked in your unit tests.
             const authService = {
                 /**
@@ -40,7 +47,15 @@
 
             const { createApp } = Vue;
 
-            class viewModel {
+            // Internally, the view model works better with a state machine.
+            const UserState = Object.freeze({
+                LoggedOut: 'LoggedOut',
+                LoggedIn: 'LoggedIn',
+                IsBusy: 'IsBusy'
+            });
+
+            class CurrentViewModel {
+                currentState = UserState.LoggedOut;
                 showLoginButton = true;
                 showLogoutButton = false;
                 constructor(authServiceInstance) {
@@ -60,10 +75,28 @@
                     this.showLoginButton = true;
                     this.showLogoutButton = false;
                 }
+
+                changeState(newState) {
+                    this.currentState = newState;
+                    switch (this.currentState) {
+                        case UseState.LoggedIn:
+                            this.viewModel.showBusy = false;
+                            this.viewModel.showLoginButton = false;
+                            this.viewModel.showLogoutButton = true;
+                            break;
+
+                        case UserState.IsBusy:
+                            this.viewModel.showBusy
+                            break;
+
+                        case UserState.LoggedOut:
+                            break;
+                    }
+                }
             }
 
             // The component contains glue logic.
-            const viewModelInstance = new viewModel(authService);
+            const viewModelInstance = new CurrentViewModel(authService);
 
             const app = createApp({
                 data() {
